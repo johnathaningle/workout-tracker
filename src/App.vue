@@ -17,7 +17,7 @@
           <input v-model="cooldownTime" name="cooldown" type="number" max="15" min="1" step="1" class="form-control">
         </div>
       </div>
-      <div class="col-md-7  text-center bg-light">
+      <div class="col-md-7 text-center">
         
         <div class="col-12 p-3 border border-4 border-dark bg-light">
           <h2 class="w-100">{{ timeElapsedString }}</h2>
