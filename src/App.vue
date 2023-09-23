@@ -18,7 +18,7 @@
         </div>
       </div>
       <div class="col-md-7 text-center">
-        
+
         <div class="col-12 p-3 border border-4 border-dark bg-light">
           <h2 class="w-100">{{ timeElapsedString }}</h2>
         </div>
@@ -27,14 +27,34 @@
   </div>
   <div class="progress-bar border bg-light">
     <div v-if="timeElapsed > 0" class="bg-dark h-100 opacity-50" :style="{ width: ((timeElapsed / 60.0) / totalTime) * 100.0 + '%' }"></div>
-    <div class="warmup bg-danger h-100 opacity-75" :style="{ width: (warmupTime / totalTime) * 100.0 + '%' }"></div>
-    <div class="cooldown bg-success h-100 opacity-75" :style="{ width: (cooldownTime / totalTime) * 100.0 + '%' }"></div>
+    <div v-if="showWarmAndCooldownBars" class="warmup bg-danger h-100 opacity-75" :style="{ width: (warmupTime / totalTime) * 100.0 + '%' }"></div>
+    <div v-if="showWarmAndCooldownBars" class="cooldown bg-success h-100 opacity-75" :style="{ width: (cooldownTime / totalTime) * 100.0 + '%' }"></div>
 
+  </div>
+  <div class="modal fade" id="workout-complete" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Workout Complete!</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          Congrats on completing your workout. Would you like to start another one?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="restart">Yes</button>
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="reset">No</button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
 import { ref, computed } from 'vue';
+//import bootstrap
+import * as bootstrap from 'bootstrap';
 
 
 //import HelloWorld from './components/HelloWorld.vue'
@@ -59,14 +79,32 @@ function pause() {
   clearInterval(interval.value);
 }
 
+function restart() {
+  reset();
+  start();
+}
+
 function reset() {
   timeElapsed.value = 0;
 }
 
+const showWarmAndCooldownBars = computed(() => {
+  return !(totalTime.value < (warmupTime.value + cooldownTime.value))
+});
 function start() {
   state.value = 'started';
   interval.value = setInterval(() => {
     timeElapsed.value++;
+    //pause once complete
+    if (timeElapsed.value / 60 >= totalTime.value) {
+      clearInterval(interval.value);
+      state.value = 'paused';
+      var myModal = new bootstrap.Modal(document.getElementById('workout-complete'), {
+        keyboard: false
+      })
+      myModal.show()
+
+    }
   }, 1000);
 }
 
