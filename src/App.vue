@@ -7,6 +7,7 @@
           <button class="btn btn-success w-100 mb-3" @click="start" v-if="state == 'paused'">Start</button>
           <button class="btn btn-secondary w-100 mb-3" @click="pause" v-if="state == 'started'">Pause</button>
           <button class="btn btn-secondary w-100 mb-3" @click="reset" v-if="state == 'paused' && timeElapsed > 0">Reset</button>
+          <button class="btn btn-secondary w-100 mb-3" @click="testAudio" v-if="state == 'paused'">Test Audio</button>
         </div>
         <div class="col-12 p-3 border border-4 border-dark bg-light">
           <label for="length">Workout Time (minutes)</label>
@@ -19,7 +20,7 @@
       </div>
       <div class="col-md-7 text-center">
 
-        <div class="col-12 p-3 border border-4 border-dark bg-light">
+        <div class="col-12 p-3 border border-4 border-dark" :class="{ 'bg-light': !isTime && !isWarningTime, 'bg-warning': isWarningTime && !isTime, 'bg-danger': isTime && !isWarningTime  }">
           <h2 class="w-100">{{ timeElapsedString }}</h2>
         </div>
       </div>
@@ -61,6 +62,8 @@ import * as bootstrap from 'bootstrap';
 const timeElapsed = ref(0);
 const interval = ref(null);
 const state = ref('paused');
+const isWarningTime = ref(false);
+const isTime = ref(false);
 
 //varaibles to store the requested times the user would like to workout, warmup, etc
 const totalTime = ref(30);
@@ -73,6 +76,13 @@ const timeElapsedString = computed(() => {
   const seconds = timeElapsed.value % 60;
   return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 });
+
+
+const audio = new Audio(require('@/assets/timer.mp3'));
+
+function testAudio() {
+  audio.play();
+}
 
 function pause() {
   state.value = 'paused';
@@ -91,10 +101,27 @@ function reset() {
 const showWarmAndCooldownBars = computed(() => {
   return !(totalTime.value < (warmupTime.value + cooldownTime.value))
 });
+
+//warn the user with audio and by changing the background color when the interval is up
+function handleWarningIndicator() {
+  if ((timeElapsed.value + 4) % 60 == 0) {
+      audio.play();
+      isWarningTime.value = true;
+      setTimeout(() => {
+        isWarningTime.value = false;
+        isTime.value = true;
+        setTimeout(() => {
+          isTime.value = false;
+        }, 1000);
+      }, 3000);
+    }
+}
+
 function start() {
   state.value = 'started';
   interval.value = setInterval(() => {
     timeElapsed.value++;
+    handleWarningIndicator();
     //pause once complete
     if (timeElapsed.value / 60 >= totalTime.value) {
       clearInterval(interval.value);
