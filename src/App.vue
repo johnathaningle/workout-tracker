@@ -4,10 +4,9 @@
       <div class="col-md-4 mb-3">
         <div class="col-12 p-3 mb-3 border border-4 border-dark bg-light">
           <h5 class="text-center mb-3">Workout Timer</h5>
-          <button class="btn btn-success w-100 mb-3" @click="start" v-if="state == 'paused'">Start</button>
+          <button class="btn btn-success w-100 mb-3" @click="start" v-if="state == 'paused'">{{ timeElapsed > 0 ? 'Resume' : 'Start' }}</button>
           <button class="btn btn-secondary w-100 mb-3" @click="pause" v-if="state == 'started'">Pause</button>
           <button class="btn btn-secondary w-100 mb-3" @click="reset" v-if="state == 'paused' && timeElapsed > 0">Reset</button>
-          <button class="btn btn-secondary w-100 mb-3" @click="testAudio" v-if="state == 'paused'">Test Audio</button>
         </div>
         <div class="col-12 p-3 border border-4 border-dark bg-light">
           <label for="length">Workout Time (minutes)</label>
@@ -16,12 +15,17 @@
           <input v-model="warmupTime" name="warmup" type="number" max="15" min="1" step="1" class="form-control">
           <label for="cooldown">Cooldown (minutes)</label>
           <input v-model="cooldownTime" name="cooldown" type="number" max="15" min="1" step="1" class="form-control">
+          <label for="audioUrl">Youtube URL (share URL)</label>
+          <input name="audioUrl" class="form-control" v-model="youtubeUrl" type="text">
         </div>
       </div>
       <div class="col-md-7 text-center">
 
-        <div class="col-12 p-3 border border-4 border-dark" :class="{ 'bg-light': !isTime && !isWarningTime, 'bg-warning': isWarningTime && !isTime, 'bg-danger': isTime && !isWarningTime  }">
+        <div class="col-12 mb-3 p-3 border border-4 border-dark" :class="{ 'bg-light': !isTime && !isWarningTime, 'bg-warning': isWarningTime && !isTime, 'bg-danger': isTime && !isWarningTime  }">
           <h2 class="w-100">{{ timeElapsedString }}</h2>
+        </div>
+        <div class="col-12 p-3 border border-4 border-dark">
+          <iframe class="w-100" style="min-height: 300px;" :src="audioUrl" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
         </div>
       </div>
     </div>
@@ -60,10 +64,20 @@ import * as bootstrap from 'bootstrap';
 
 //import HelloWorld from './components/HelloWorld.vue'
 const timeElapsed = ref(0);
+const youtubeStartTime = ref(0);
 const interval = ref(null);
 const state = ref('paused');
 const isWarningTime = ref(false);
 const isTime = ref(false);
+const youtubeUrl = ref('https://youtu.be/rKDhP1R7wy0?si=cDHpAM-1qAOoPFmS');
+const audioUrl = computed(() => {
+  var val = youtubeUrl.value;
+  val = val.replace('https://youtu.be', 'https://youtube.com/embed')
+  if (state.value == 'started') {
+    return val + '&autoplay=1' + '&start=' + youtubeStartTime.value;
+  }
+  return val + '&start=' + youtubeStartTime.value;
+});
 
 //varaibles to store the requested times the user would like to workout, warmup, etc
 const totalTime = ref(30);
@@ -80,12 +94,9 @@ const timeElapsedString = computed(() => {
 
 const audio = new Audio(require('@/assets/timer.mp3'));
 
-function testAudio() {
-  audio.play();
-}
-
 function pause() {
   state.value = 'paused';
+  youtubeStartTime.value = timeElapsed.value;
   clearInterval(interval.value);
 }
 
@@ -96,6 +107,7 @@ function restart() {
 
 function reset() {
   timeElapsed.value = 0;
+  youtubeStartTime.value = 0;
 }
 
 const showWarmAndCooldownBars = computed(() => {
