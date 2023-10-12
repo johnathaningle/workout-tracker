@@ -1,12 +1,12 @@
 <template>
-  <div class="container-fluid p-3 my-5">
+  <NavBar /> 
+  <div class="container-fluid p-3 my-3">
     <div class="row">
       <div class="col-md-4 mb-3">
         <div class="col-12 p-3 mb-3 border border-4 border-dark bg-light">
-          <h5 class="text-center mb-3">Workout Timer</h5>
-          <button class="btn btn-success w-100 mb-3" @click="start" v-if="state == 'paused'">{{ timeElapsed > 0 ? 'Resume' : 'Start' }}</button>
-          <button class="btn btn-secondary w-100 mb-3" @click="pause" v-if="state == 'started'">Pause</button>
-          <button class="btn btn-secondary w-100 mb-3" @click="reset" v-if="state == 'paused' && timeElapsed > 0">Reset</button>
+          <button class="btn btn-success w-100" @click="start" v-if="state == 'paused'">{{ timeElapsed > 0 ? 'Resume' : 'Start' }}</button>
+          <button class="btn btn-secondary w-100" @click="pause" v-if="state == 'started'">Pause</button>
+          <button class="btn btn-secondary w-100 mt-3" @click="reset" v-if="state == 'paused' && timeElapsed > 0">Reset</button>
         </div>
         <div class="col-12 p-3 border border-4 border-dark bg-light">
           <label for="length">Workout Time (minutes)</label>
@@ -57,12 +57,13 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 //import bootstrap
 import * as bootstrap from 'bootstrap';
-
+import NavBar from './components/NavBar'
 
 //import HelloWorld from './components/HelloWorld.vue'
+const audio = ref(null);
 const timeElapsed = ref(0);
 const youtubeStartTime = ref(0);
 const interval = ref(null);
@@ -79,6 +80,10 @@ const audioUrl = computed(() => {
   return val + '&start=' + youtubeStartTime.value;
 });
 
+onMounted(() => {
+  audio.value = null;
+})
+
 //varaibles to store the requested times the user would like to workout, warmup, etc
 const totalTime = ref(30);
 const warmupTime = ref(1);
@@ -92,11 +97,11 @@ const timeElapsedString = computed(() => {
 });
 
 
-const audio = new Audio(require('@/assets/timer.mp3'));
 
 function pause() {
   state.value = 'paused';
   youtubeStartTime.value = timeElapsed.value;
+  audio.value = null;
   clearInterval(interval.value);
 }
 
@@ -108,6 +113,7 @@ function restart() {
 function reset() {
   timeElapsed.value = 0;
   youtubeStartTime.value = 0;
+  audio.value = null;
 }
 
 const showWarmAndCooldownBars = computed(() => {
@@ -117,7 +123,7 @@ const showWarmAndCooldownBars = computed(() => {
 //warn the user with audio and by changing the background color when the interval is up
 function handleWarningIndicator() {
   if ((timeElapsed.value + 4) % 60 == 0) {
-      audio.play();
+      audio.value.play();
       isWarningTime.value = true;
       setTimeout(() => {
         isWarningTime.value = false;
@@ -130,6 +136,7 @@ function handleWarningIndicator() {
 }
 
 function start() {
+  audio.value = new Audio(require('@/assets/timer.mp3'));
   state.value = 'started';
   interval.value = setInterval(() => {
     timeElapsed.value++;
