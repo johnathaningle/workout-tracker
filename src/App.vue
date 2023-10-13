@@ -1,13 +1,13 @@
 <template>
   <NavBar />
-  <div class="container-fluid p-3 my-3">
+  <div class="container-fluid p-3 px-lg-5 my-3">
     <div class="row">
-      <div class="col-md-4 mb-3">
+      <div class="col-md-4 mb-3 mb-md-0">
+        <TimeDisplay />
         <ControlButtons />
         <TimeControls />
       </div>
-      <div class="col-md-7 text-center">
-        <TimeDisplay />
+      <div class="col-md-8 text-center">
         <VideoPlayer />
       </div>
     </div>
