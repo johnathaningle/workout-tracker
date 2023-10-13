@@ -14,6 +14,7 @@ export const useWorkoutStore = defineStore("workout", {
     warmupTime: 1,
     cooldownTime: 1,
     isComplete: false,
+    intervalTime: 60,
   }),
   getters: {
     audioUrl: (s) => {
@@ -51,7 +52,7 @@ export const useWorkoutStore = defineStore("workout", {
     },
     handleWarningIndicator() {
       //warn the user with audio and by changing the background color when the interval is up
-      if ((this.timeElapsed + 4) % 60 == 0) {
+      if ((this.timeElapsed + 4) % this.intervalTime == 0) {
         if (this.audio !== null) {
           this.audio.play();
         }

@@ -52,6 +52,9 @@ onMounted(() => {
     if (router.currentRoute.value.query.yt) {
       workoutStore.youtubeUrl = router.currentRoute.value.query.yt;
     }
+    if (router.currentRoute.value.query.id) {
+      workoutStore.intervalTime = parseInt(router.currentRoute.value.query.id);
+    }
   }, 500);
 })
 </script>
