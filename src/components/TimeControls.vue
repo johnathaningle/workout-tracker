@@ -23,7 +23,14 @@ const workoutStore = useWorkoutStore();
 //update the url with the updated values
 const updateParameters = () => {
   //create a string representation of the route with the four query string params
-  var r = '/?t=' + workoutStore.totalTime + '&w=' + workoutStore.warmupTime + '&c=' + workoutStore.cooldownTime + '&yt=' + workoutStore.youtubeUrl;
+  var r = '';
+  //if we are not localhost, alter the url structure
+  if(window.location.href.indexOf('localhost') < 1) {
+    //the production build of this requires this first part of the url
+    r += '/workout-tracker';
+  }
+  r += '/?t=' + workoutStore.totalTime + '&w=' + workoutStore.warmupTime + '&c=' + workoutStore.cooldownTime + '&yt=' + workoutStore.youtubeUrl;
+  
 
   // Use router.push to update the URL with the new parameters
   router.push(r);
