@@ -10,13 +10,13 @@
         </div>
         <div class="col-12 p-3 border border-4 border-dark bg-light">
           <label for="length">Workout Time (minutes)</label>
-          <input v-model="totalTime" name="length" type="number" max="60" min="5" step="1" class="form-control">
+          <input @input="updateParameters" v-model="totalTime" name="length" type="number" max="60" min="5" step="1" class="form-control">
           <label for="warmup">Warmup (minutes)</label>
-          <input v-model="warmupTime" name="warmup" type="number" max="15" min="1" step="1" class="form-control">
+          <input @input="updateParameters" v-model="warmupTime" name="warmup" type="number" max="15" min="1" step="1" class="form-control">
           <label for="cooldown">Cooldown (minutes)</label>
-          <input v-model="cooldownTime" name="cooldown" type="number" max="15" min="1" step="1" class="form-control">
+          <input @input="updateParameters" v-model="cooldownTime" name="cooldown" type="number" max="15" min="1" step="1" class="form-control">
           <label for="audioUrl">Youtube URL (share URL)</label>
-          <input name="audioUrl" class="form-control" v-model="youtubeUrl" type="text">
+          <input @input="updateParameters" name="audioUrl" class="form-control" v-model="youtubeUrl" type="text">
         </div>
       </div>
       <div class="col-md-7 text-center">
@@ -58,9 +58,13 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 //import bootstrap
 import * as bootstrap from 'bootstrap';
 import NavBar from './components/NavBar'
+
+// const route = useRoute();
+const router = useRouter();
 
 //import HelloWorld from './components/HelloWorld.vue'
 const audio = ref(null);
@@ -80,14 +84,32 @@ const audioUrl = computed(() => {
   return val + '&start=' + youtubeStartTime.value;
 });
 
-onMounted(() => {
-  audio.value = null;
-})
 
 //varaibles to store the requested times the user would like to workout, warmup, etc
 const totalTime = ref(30);
 const warmupTime = ref(1);
 const cooldownTime = ref(1);
+
+
+
+onMounted(() => {
+  audio.value = null;
+  ///wait for the router to be ready
+  setTimeout(() => {
+    if(router.currentRoute.value.query.t) {
+      totalTime.value = parseInt(router.currentRoute.value.query.t);
+    }
+    if(router.currentRoute.value.query.w) {
+      warmupTime.value = parseInt(router.currentRoute.value.query.w);
+    }
+    if(router.currentRoute.value.query.c) {
+      cooldownTime.value = parseInt(router.currentRoute.value.query.c);
+    }
+    if(router.currentRoute.value.query.yt) {
+      youtubeUrl.value = router.currentRoute.value.query.yt;
+    }
+  }, 200);
+})
 
 //create a computed string to represent the time elapsed
 const timeElapsedString = computed(() => {
@@ -114,6 +136,15 @@ function reset() {
   timeElapsed.value = 0;
   youtubeStartTime.value = 0;
   audio.value = null;
+}
+
+//update the url with the updated values
+const updateParameters = () => {
+  //create a string representation of the route with the four query string params
+  var r = '/?t=' + totalTime.value + '&w=' + warmupTime.value + '&c=' + cooldownTime.value + '&yt=' + youtubeUrl.value;
+
+  // Use router.push to update the URL with the new parameters
+  router.push(r);
 }
 
 const showWarmAndCooldownBars = computed(() => {

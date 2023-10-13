@@ -1,20 +1,19 @@
-// src/router.js
-// import { createRouter, createWebHistory } from 'vue-router';
+import { createRouter, createWebHistory } from 'vue-router';
 
-// // Import your components
-// import Home from './views/Home.vue';
+// Import your components
+import App from './App.vue';
 
-// const routes = [
-//   {
-//     path: '/',
-//     name: 'Home',
-//     component: Home,
-//   }
-// ];
+const routes = [
+  {
+    path: '/:params(.*)',
+    name: 'Home',
+    component: App,
+  }
+];
 
-// const router = createRouter({
-//   history: createWebHistory(),
-//   routes,
-// });
+const router = createRouter({
+  history: createWebHistory(),
+  routes,
+});
 
-// export default router;
+export default router;
