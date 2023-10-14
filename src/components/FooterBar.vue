@@ -6,11 +6,18 @@
 </template>
 
 <script setup>
-   
+
 </script>
 
 <style scoped>
- .spacer {
-        min-height: 100px;
-    }
+.spacer {
+    min-height: 100px;
+}
+
+footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    z-index: 0;
+}
 </style>
