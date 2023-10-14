@@ -1,13 +1,13 @@
 <template>
   <NavBar />
-  <div class="container-fluid p-3 px-lg-5 my-3">
+  <div class="p-3 px-lg-5 my-3" :class="{ 'container-fluid': workoutStore.isDisplayingVideo, 'container': !workoutStore.isDisplayingVideo }">
     <div class="row">
-      <div class="col-md-4 mb-3 mb-md-0">
+      <div class="mb-3 mb-md-0" :class="{ 'col-md-4': workoutStore.isDisplayingVideo, 'col-12': !workoutStore.isDisplayingVideo }">
         <TimeDisplay />
         <ControlButtons />
         <TimeControls />
       </div>
-      <div class="col-md-8 text-center">
+      <div v-if="workoutStore.isDisplayingVideo" class="col-md-8 text-center">
         <VideoPlayer />
       </div>
     </div>

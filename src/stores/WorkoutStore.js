@@ -43,6 +43,9 @@ export const useWorkoutStore = defineStore("workout", {
     intervalsRemaining: (s) => {
       return s.totalIntervals - s.currentInterval;
     },
+    isDisplayingVideo: (s) => {
+      return s.youtubeUrl !== undefined && s.youtubeUrl.length > 0;
+    }
   },
   actions: {
     start() {
