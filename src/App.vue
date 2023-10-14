@@ -13,7 +13,9 @@
     </div>
   </div>
   <ProgressBar />
+  <FooterBar />
   <CompleteModal />
+  <IntervalProgress />
 </template>
 
 <script setup>
@@ -27,6 +29,8 @@ import VideoPlayer from './components/VideoPlayer';
 import ProgressBar from './components/ProgressBar';
 import CompleteModal from './components/CompleteModal';
 import TimeDisplay from './components/TimeDisplay';
+import FooterBar from './components/FooterBar.vue';
+import IntervalProgress from './components/IntervalProgress.vue';
 
 import { useWorkoutStore } from './stores/WorkoutStore';
 

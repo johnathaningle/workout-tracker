@@ -1,5 +1,5 @@
 <template>
-    <div class="col-12 p-3 border border-4 border-dark h-100">
+    <div class="col-12 p-3 border border-4 border-dark h-100 bg-white">
         <iframe class="w-100 h-100" :src="workoutStore.audioUrl" title="YouTube video player"
             frameborder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"

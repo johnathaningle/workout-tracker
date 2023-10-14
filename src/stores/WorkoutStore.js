@@ -34,6 +34,15 @@ export const useWorkoutStore = defineStore("workout", {
       const seconds = s.timeElapsed % 60;
       return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
     },
+    totalIntervals: (s) => {
+      return Math.floor((s.totalTime * 60.0) / s.intervalTime);
+    },
+    currentInterval: (s) => {
+      return Math.floor(s.timeElapsed / s.intervalTime);
+    },
+    intervalsRemaining: (s) => {
+      return s.totalIntervals - s.currentInterval;
+    },
   },
   actions: {
     start() {
