@@ -1,6 +1,7 @@
 <template>
     <div class="col-12 p-3 border border-4 border-dark bg-light">
-        <label for="length">Workout Time (minutes)</label>
+        <label class="d-inline" for="length">Workout Time (minutes)</label>
+        <button v-if="workoutStore.state == 'paused'" class="text-muted btn btn-link d-inline float-end p-0" id="reset-options" @click="resetOptions">Reset Options</button>
         <input @input="updateParameters" v-model="workoutStore.totalTime" name="length" type="number" max="60" min="5"
             step="1" class="form-control">
         <label for="warmup">Warmup (minutes)</label>
@@ -23,6 +24,12 @@ import { useRouter } from 'vue-router';
 
 const router = useRouter();
 const workoutStore = useWorkoutStore();
+
+const resetOptions = () => {
+    workoutStore.reset();
+    workoutStore.resetOptions();
+    updateParameters();
+}
 //update the url with the updated values
 const updateParameters = () => {
     //create a string representation of the route with the four query string params
@@ -39,3 +46,10 @@ const updateParameters = () => {
     router.push(r);
 }
 </script>
+
+<style scoped>
+#reset-options {
+    top: 0;
+    right: 0;
+}
+</style>

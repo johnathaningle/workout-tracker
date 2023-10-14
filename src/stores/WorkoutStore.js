@@ -96,6 +96,13 @@ export const useWorkoutStore = defineStore("workout", {
       this.youtubeStartTime = 0;
       this.audio = null;
       this.isComplete = false;
+    },
+    resetOptions() {
+      this.youtubeUrl = 'https://youtu.be/rKDhP1R7wy0?si=cDHpAM-1qAOoPFmS';
+      this.totalTime = 30;
+      this.warmupTime = 1;
+      this.cooldownTime = 1;
+      this.intervalTime = 60;
     }
   }
 });
