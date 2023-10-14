@@ -4,7 +4,7 @@
     
         <div class="row p-3">
             <div class="col-lg-6 text-center text-lg-start">
-                <h2 class="fw-bold">{{ workoutStore.timeElapsedString }}</h2>
+                <h1 class="fw-bold m-0">{{ workoutStore.timeElapsedString }}</h1>
             </div>
             <div class="col-lg-6 text-center text-lg-end">
                 <small class="d-block m-0">Interval Seconds: <strong>{{ workoutStore.timeElapsed % workoutStore.intervalTime }}</strong></small>
